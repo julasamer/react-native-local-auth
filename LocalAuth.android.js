@@ -31,6 +31,21 @@ function performAuth(opts) {
     });
 }
 
+function performAuthSkipInit(opts) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            RNLocalAuth.authenticate(opts).
+            then(() => resolve()).
+            catch((e) => {
+                e.name = e.code;
+                reject(e);
+            });
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
 module.exports = {
     hasTouchID() {
         return Promise.reject(createError('RCTTouchIDNotSupported'))
@@ -42,5 +57,9 @@ module.exports = {
 
     authenticate(opts) {
         return performAuth(opts)
+    },
+
+    auth(opts) {
+        return performAuthSkipInit(opts);
     }
 };
